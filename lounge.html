@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>FAFO — Video Lounge</title>
+<meta name="description" content="FAFO Video Lounge — live video chat with real people. 18+ only.">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root { --red: #e10600; --black: #0a0a0a; --gray: #1a1a1a; --white: #f5f5f5; }
+  html, body { height: 100%; }
+  body { background: var(--black); color: var(--white); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+
+  /* Age gate */
+  #agegate { position: fixed; inset: 0; background: #000; z-index: 100; display: flex; align-items: center; justify-content: center; padding: 24px; }
+  #agegate.hidden { display: none; }
+  .gate-box { text-align: center; max-width: 420px; }
+  .gate-box h1 { font-size: 56px; font-weight: 900; letter-spacing: 4px; color: var(--red); margin-bottom: 8px; }
+  .gate-box p { color: #999; margin-bottom: 20px; font-size: 16px; line-height: 1.5; }
+  .gate-box .q { font-size: 22px; font-weight: 700; margin-bottom: 20px; color: var(--white); }
+  .gate-btns { display: flex; gap: 16px; justify-content: center; }
+  .gate-btns button { font-size: 18px; font-weight: 700; padding: 14px 42px; border: none; border-radius: 8px; cursor: pointer; }
+  #yesBtn { background: var(--red); color: #fff; }
+  #noBtn { background: #333; color: #fff; }
+
+  /* Lounge */
+  #lounge { display: none; height: 100dvh; flex-direction: column; }
+  #lounge.visible { display: flex; }
+  .lounge-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 14px; background: #111; border-bottom: 1px solid #222; flex: 0 0 auto; }
+  .lounge-bar .brand { font-weight: 900; letter-spacing: 2px; color: var(--red); font-size: 18px; text-decoration: none; }
+  .lounge-bar .back { color: #999; text-decoration: none; font-size: 14px; }
+  .lounge-bar .back:hover { color: #fff; }
+  .safety { flex: 0 0 auto; background: #160a0a; color: #c98; font-size: 12.5px; line-height: 1.45; padding: 8px 14px; border-bottom: 1px solid #2a1414; text-align: center; }
+  .safety b { color: var(--red); }
+  .frame-wrap { flex: 1 1 auto; position: relative; min-height: 0; background: #000; }
+  #jitsiFrame { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .join-hint { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; text-align: center; padding: 24px; color: #777; font-size: 15px; line-height: 1.6; pointer-events: none; }
+  .join-hint.hidden { display: none; }
+</style>
+</head>
+<body>
+
+<div id="agegate">
+  <div class="gate-box">
+    <h1>FAFO</h1>
+    <p>The Video Lounge is live video chat with real people.<br>Adults only — no exceptions.</p>
+    <div class="q">Are you 18 or older?</div>
+    <div class="gate-btns">
+      <button id="yesBtn">Yes, I'm 18+</button>
+      <button id="noBtn">No</button>
+    </div>
+  </div>
+</div>
+
+<div id="lounge">
+  <div class="lounge-bar">
+    <a class="back" href="index.html">&larr; FAFO home</a>
+    <span class="brand">VIDEO LOUNGE</span>
+    <span style="width:70px"></span>
+  </div>
+  <div class="safety"><b>18+ only.</b> No recording other members. Mods can remove anyone, no warnings.
+  <br><span style="font-size:11.5px">Room not loading? <a href="#" id="openTab" style="color:#e10600">Open the lounge in a new tab &nearr;</a></span></div>
+  <div class="frame-wrap">
+    <div class="join-hint" id="joinHint">Loading the lounge&hellip;<br>allow camera &amp; mic when your browser asks.</div>
+    <iframe id="jitsiFrame" title="FAFO Video Lounge"
+      allow="camera; microphone; fullscreen; display-capture; autoplay; clipboard-write"></iframe>
+  </div>
+</div>
+
+<script>
+  // Video runs on fairmeeting.net — a free Jitsi Meet server that lets the first
+  // person in start the room with no login (meet.jit.si requires a moderator
+  // sign-in since Aug 2023, so it can't work for anonymous visitors).
+  var JITSI_DOMAIN = 'https://fairmeeting.net';
+  var ROOM = 'FAFOVideoLounge';
+  document.getElementById('yesBtn').onclick = function () {
+    document.getElementById('agegate').classList.add('hidden');
+    document.getElementById('lounge').classList.add('visible');
+    document.getElementById('jitsiFrame').src =
+      JITSI_DOMAIN + '/' + ROOM +
+      '#config.prejoinPageEnabled=false&config.disableDeepLinking=true&config.startWithVideoMuted=false';
+    setTimeout(function () {
+      document.getElementById('joinHint').classList.add('hidden');
+    }, 4000);
+  };
+  document.getElementById('noBtn').onclick = function () {
+    window.location.href = 'https://www.google.com';
+  };
+  document.getElementById('openTab').onclick = function (e) {
+    e.preventDefault();
+    window.open(JITSI_DOMAIN + '/' + ROOM, '_blank');
+  };
+</script>
+</body>
+</html>
